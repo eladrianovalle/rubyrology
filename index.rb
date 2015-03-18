@@ -1,5 +1,9 @@
 require 'sinatra'
 
+def valid_birthdate(input)
+    return false
+end
+
 def get_birth_path_number(birthdate)
     number  = birthdate[0] + birthdate[1] + birthdate[2] + birthdate[3] + birthdate[4] + birthdate[5] + birthdate[6] + birthdate[7]
     if number >= 9
@@ -89,7 +93,11 @@ get '/message/:birth_path_number' do
 end
 
 post '/' do
-    birthdate = params[:birthdate].gsub("-","")
-    birth_path_number = get_birth_path_number(birthdate)
-    redirect "/message/#{birth_path_number}"
+    birthdate = params[:birthdate]#.gsub("-","")
+    if valid_birthdate(birthdate) == true
+        birth_path_number = get_birth_path_number(birthdate)
+        redirect "/message/#{birth_path_number}"
+    else
+        erb :form
+    end
 end
