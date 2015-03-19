@@ -1,8 +1,13 @@
 require 'sinatra'
 
 def valid_birthdate(input)
-    return false
+    if input.length == 8
+        return true
+    else
+        return false
+    end
 end
+
 
 def get_birth_path_number(birthdate)
     number  = birthdate[0] + birthdate[1] + birthdate[2] + birthdate[3] + birthdate[4] + birthdate[5] + birthdate[6] + birthdate[7]
@@ -59,13 +64,20 @@ end
 def setup_index_view
     birthdate = params[:birthdate].gsub("-","")
 
-    birthdate = birthdate.chars.to_a.map(&:to_i)
+    if valid_birthdate(birthdate) == true
 
-    birth_path_number = get_birth_path_number(birthdate)
+        birthdate = birthdate.chars.to_a.map(&:to_i)
 
-    @your_reading = display_message(birth_path_number) 
+        birth_path_number = get_birth_path_number(birthdate)
 
-    redirect "/message/#{birth_path_number}"
+        @your_reading = display_message(birth_path_number) 
+
+        redirect "/message/#{birth_path_number}"
+    else
+        @error = "Oops!  Your input is invalid.  Please try again."
+        
+        erb :form
+    end
 end
 
 get '/:birthdate' do 
